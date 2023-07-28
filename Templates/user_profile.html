@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Student Information</title>
+  <title>User Information</title>
   <style>
     #property-search-results {
   height: auto;
@@ -77,8 +77,8 @@
     }
   </style>
   <script>
-    // assuming you have a student_profile object available
-    var student_profile = {{ student_profile | tojson | safe }};
+    // assuming you have a user_profile object available
+    var user_profile = {{ user_profile | tojson | safe }};
 
     function updateProperty(element) {
       const form = element.parentNode;
@@ -96,7 +96,7 @@
   resultsDiv.innerHTML = '';
 
   // Filter the properties
-  var filteredProperties = Object.keys(student_profile).filter(function(property) {
+  var filteredProperties = Object.keys(user_profile).filter(function(property) {
     return property.toUpperCase().includes(filter);
   });
 
@@ -128,7 +128,7 @@
   </script>
 </head>
 <body>
-  <h1>Information for {{student}}</h1>
+  <h1>Information for {{user}}</h1>
 
    <input id="property-search" type="text" oninput="searchProperties()" onclick="searchProperties(); event.stopPropagation();" placeholder="Search properties...">
 
@@ -144,7 +144,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for property, value in student_profile.items() %}
+      {% for property, value in user_profile.items() %}
         <tr id="row-{{ property }}">
           <td>{{ property }}</td>
           <td>

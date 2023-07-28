@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Students</title>
+  <title>Users</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -13,7 +13,7 @@
       margin-bottom: 10px;
     }
 
-    .student-button {
+    .user-button {
       display: inline-block;
       margin: 5px;
       padding: 8px 15px;
@@ -23,14 +23,14 @@
       color: #333;
     }
 
-    .student-button:hover {
+    .user-button:hover {
       background-color: #ebebeb;
     }
 
-    #student-search-results {
+    #user-search-results {
       margin-top: 10px;
     }
-    #student-search {
+    #user-search {
       padding: 8px;
       border: 1px solid #ccc;
       font-family: Arial, sans-serif;
@@ -54,38 +54,38 @@
   </style>
 </head>
 <body>
-  <h1>Students</h1>
-  <input id="student-search" type="text" onkeyup="searchStudents()" placeholder="Search students...">
+  <h1>Users</h1>
+  <input id="user-search" type="text" onkeyup="searchUsers()" placeholder="Search users...">
 
-  <div id="student-search-results"></div>
+  <div id="user-search-results"></div>
 
-  {% for student in students %}
-    <a class="student-button" href="/{{ student }}/studentprofile">{{ student }}</a>
+  {% for user in users %}
+    <a class="user-button" href="/{{ user }}/userprofile">{{ user }}</a>
   {% endfor %}
 
   <script>
-    // assuming you have a students object available
-    var students = {{ students | tojson | safe }};
+    // assuming you have a users object available
+    var users = {{ users | tojson | safe }};
 
-    function searchStudents() {
-      var input = document.getElementById('student-search');
+    function searchUsers() {
+      var input = document.getElementById('user-search');
       var filter = input.value.toUpperCase();
-      var resultsDiv = document.getElementById('student-search-results');
+      var resultsDiv = document.getElementById('user-search-results');
 
       // Clear current results
       resultsDiv.innerHTML = '';
 
-      // Filter the students
-      var filteredStudents = students.filter(function(student) {
-        return student.toUpperCase().includes(filter);
+      // Filter the users
+      var filteredUsers = users.filter(function(user) {
+        return user.toUpperCase().includes(filter);
       });
 
       // Create and append the new search result elements
-      for(var i = 0; i < filteredStudents.length; i++) {
+      for(var i = 0; i < filteredUsers.length; i++) {
         var result = document.createElement('a');
-        result.href = '/' + filteredStudents[i] + '/studentprofile';
+        result.href = '/' + filteredUsers[i] + '/userprofile';
         result.className = 'search-result';
-        result.textContent = filteredStudents[i];
+        result.textContent = filteredUsers[i];
         resultsDiv.appendChild(result);
       }
     }

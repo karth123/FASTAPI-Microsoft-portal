@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Courses</title>
+    <title>Groups</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,7 +14,7 @@
             margin-bottom: 10px;
         }
 
-        .course-button {
+        .group-button {
             display: inline-block;
             margin: 5px;
             padding: 8px 15px;
@@ -24,15 +24,15 @@
             color: #333;
         }
 
-        .course-button:hover {
+        .group-button:hover {
             background-color: #ebebeb;
         }
 
-        #course-search-results {
+        #group-search-results {
             margin-top: 10px;
         }
 
-        #course-search {
+        #group-search {
             padding: 8px;
             border: 1px solid #ccc;
             font-family: Arial, sans-serif;
@@ -57,38 +57,38 @@
     </style>
 </head>
 <body>
-    <h1>Courses</h1>
-    <input id="course-search" type="text" onkeyup="searchCourses()" placeholder="Search courses...">
+    <h1>Groups</h1>
+    <input id="group-search" type="text" onkeyup="searchGroups()" placeholder="Search groups...">
 
-    <div id="course-search-results"></div>
+    <div id="group-search-results"></div>
 
-    {% for course in courses %}
-        <a class="course-button" href="/courses/{{ course }}/courseprofile">{{ course }}</a>
+    {% for group in groups %}
+        <a class="group-button" href="/groups/{{ group }}/groupprofile">{{ group }}</a>
     {% endfor %}
 
     <script>
-        // Assuming you have a courses object available
-        var courses = {{ courses | tojson | safe }};
+        // Assuming you have a groups object available
+        var groups = {{ groups | tojson | safe }};
 
-        function searchCourses() {
-            var input = document.getElementById('course-search');
+        function searchGroups() {
+            var input = document.getElementById('group-search');
             var filter = input.value.toUpperCase();
-            var resultsDiv = document.getElementById('course-search-results');
+            var resultsDiv = document.getElementById('group-search-results');
 
             // Clear current results
             resultsDiv.innerHTML = '';
 
-            // Filter the courses
-            var filteredCourses = courses.filter(function(course) {
-                return course.toUpperCase().includes(filter);
+            // Filter the groups
+            var filteredGroups = groups.filter(function(group) {
+                return group.toUpperCase().includes(filter);
             });
 
             // Create and append the new search result elements
-            for (var i = 0; i < filteredCourses.length; i++) {
+            for (var i = 0; i < filteredGroups.length; i++) {
                 var result = document.createElement('a');
-                result.href = '/courses/' + filteredCourses[i] + '/courseprofile';
+                result.href = '/groups/' + filteredGroups[i] + '/groupprofile';
                 result.className = 'search-result';
-                result.textContent = filteredCourses[i];
+                result.textContent = filteredGroups[i];
                 resultsDiv.appendChild(result);
             }
         }

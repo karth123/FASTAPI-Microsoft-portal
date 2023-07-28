@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Course Properties</title>
+    <title>Group Properties</title>
     <style>
         /* CSS styles */
         body {
@@ -14,7 +14,7 @@
             margin-bottom: 10px;
         }
 
-        .course-button {
+        .group-button {
             display: inline-block;
             margin: 5px;
             padding: 8px 15px;
@@ -24,15 +24,15 @@
             color: #333;
         }
 
-        .course-button:hover {
+        .group-button:hover {
             background-color: #ebebeb;
         }
 
-        #course-search-results {
+        #group-search-results {
             margin-top: 10px;
         }
 
-        #course-search {
+        #group-search {
             padding: 8px;
             border: 1px solid #ccc;
             font-family: Arial, sans-serif;
@@ -57,10 +57,10 @@
     </style>
 </head>
 <body>
-    <h1>Course Properties</h1>
+    <h1>Group Properties</h1>
 
-    <div id="course-properties">
-        {% for property in template_course_properties %}
+    <div id="group-properties">
+        {% for property in template_group_properties %}
             <div class="search-result">{{ property }}</div>
         {% endfor %}
     </div>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Course Information</title>
+  <title>Group Information</title>
   <style>
     #property-search-results {
       height: auto;
@@ -78,7 +78,7 @@
     }
   </style>
    <script>
-    var course_profile = {{ course_profile | tojson | safe }};
+    var group_profile = {{ group_profile | tojson | safe }};
 
     function updateProperty(element) {
       const form = element.parentNode;
@@ -96,7 +96,7 @@
       resultsDiv.innerHTML = '';
 
       // Filter the properties
-      var filteredProperties = Object.keys(course_profile).filter(function(property) {
+      var filteredProperties = Object.keys(group_profile).filter(function(property) {
         return property.toUpperCase().includes(filter);
       });
 
@@ -125,41 +125,41 @@
       document.getElementById('property-search-results').innerHTML = '';
     });
 
-    function loadViewStudents() {
-      // Send an AJAX request to fetch the students data
+    function loadViewUsers() {
+      // Send an AJAX request to fetch the users data
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {
-          // Update the students container with the received data
-          var studentsContainer = document.getElementById('students-container');
-          studentsContainer.innerHTML = this.responseText;
+          // Update the users container with the received data
+          var usersContainer = document.getElementById('users-container');
+          usersContainer.innerHTML = this.responseText;
         }
       };
-      xhttp.open('GET', '/courses/{{ course }}/viewstudents', true);
+      xhttp.open('GET', '/groups/{{ group }}/viewusers', true);
       xhttp.send();
     }
 
-    function loadAddStudents() {
-      // Send an AJAX request to fetch the add students form
+    function loadAddUsers() {
+      // Send an AJAX request to fetch the add users form
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {
           // Update the content with the received form
-          var addStudentsContainer = document.getElementById('add-students-container');
-          addStudentsContainer.innerHTML = this.responseText;
+          var addUsersContainer = document.getElementById('add-users-container');
+          addUsersContainer.innerHTML = this.responseText;
         }
       };
-      xhttp.open('GET', '/courses/{{ course }}/addstudents', true);
+      xhttp.open('GET', '/groups/{{ group }}/addusers', true);
       xhttp.send();
     }
   </script>
 </head>
 <body>
   <div style="display: flex; align-items: center;">
-    <h1 style="flex: 1;">Information for {{ course }}</h1>
+    <h1 style="flex: 1;">Information for {{ group }}</h1>
     <div>
-      <button class="update-button" onclick="loadViewStudents()">View Students</button>
-      <button class="update-button" onclick="loadAddStudents()">Add Students</button>
+      <button class="update-button" onclick="loadViewUsers()">View Users</button>
+      <button class="update-button" onclick="loadAddUsers()">Add Users</button>
     </div>
   </div>
 
@@ -176,8 +176,8 @@
       </tr>
     </thead>
     <tbody>
-      {% for property, value in course_profile.items() %}
-        {% if property != "Type" and property != "course" %}
+      {% for property, value in group_profile.items() %}
+        {% if property != "Type" and property != "group" %}
           <tr id="row-{{ property }}">
             <td>{{ property }}</td>
             <td>
@@ -192,24 +192,24 @@
     </tbody>
   </table>
 
-  <!-- Container to hold the students data -->
-  <div id="students-container"></div>
+  <!-- Container to hold the users data -->
+  <div id="users-container"></div>
 
-  <!-- Container to hold the add students form -->
-  <div id="add-students-container"></div>
+  <!-- Container to hold the add users form -->
+  <div id="add-users-container"></div>
 
   <script>
-    function loadAddStudents() {
-      // Send an AJAX request to fetch the add students form
+    function loadAddUsers() {
+      // Send an AJAX request to fetch the add users form
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function() {
         if (this.readyState === 4 && this.status === 200) {
           // Update the content with the received form
-          var addStudentsContainer = document.getElementById('add-students-container');
-          addStudentsContainer.innerHTML = this.responseText;
+          var addUsersContainer = document.getElementById('add-users-container');
+          addUsersContainer.innerHTML = this.responseText;
         }
       };
-      xhttp.open('GET', '/courses/{{ course }}/addstudents', true);
+      xhttp.open('GET', '/groups/{{ group }}/addusers', true);
       xhttp.send();
     }
   </script>

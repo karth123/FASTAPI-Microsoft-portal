@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Student Properties</title>
+    <title>User Properties</title>
     <style>
         /* CSS styles */
         body {
@@ -19,7 +19,7 @@
             gap: 10px;
         }
 
-        .course-button {
+        .group-button {
             display: inline-block;
             margin: 5px;
             padding: 8px 15px;
@@ -29,7 +29,7 @@
             color: #333;
         }
 
-        .course-button:hover {
+        .group-button:hover {
             background-color: #ebebeb;
         }
 
@@ -47,11 +47,11 @@
             background-color: #ebebeb;
         }
 
-        #course-search-results {
+        #group-search-results {
             margin-top: 10px;
         }
 
-        #course-search {
+        #group-search {
             padding: 8px;
             border: 1px solid #ccc;
             font-family: Arial, sans-serif;
@@ -81,18 +81,18 @@
 </head>
 <body>
     <h1>
-        Student Properties
-        <form action="/template_student_properties" method="post" class="property-form">
+        User Properties
+        <form action="/template_user_properties" method="post" class="property-form">
             <input type="text" name="property_name" placeholder="Enter property name" required>
-            <button type="submit" class="course-button">Add</button>
+            <button type="submit" class="group-button">Add</button>
         </form>
     </h1>
 
-    <div id="student-properties">
-        {% for property in template_student_properties %}
+    <div id="user-properties">
+        {% for property in template_user_properties %}
             <div class="search-result">
                 <div class="property-value">{{ property }}</div>
-                <form action="/delete_template_student_property" method="post">
+                <form action="/delete_template_user_property" method="post">
                     <input type="hidden" name="property_value" value="{{ property }}">
                     <button type="submit" class="delete-button">Delete</button>
                 </form>

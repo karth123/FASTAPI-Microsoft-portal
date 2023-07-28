@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Students</title>
+  <title>Users</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -13,7 +13,7 @@
       margin-bottom: 10px;
     }
 
-    .student-button {
+    .user-button {
       display: inline-block;
       margin: 5px;
       padding: 8px 15px;
@@ -23,14 +23,14 @@
       color: #333;
     }
 
-    .student-button:hover {
+    .user-button:hover {
       background-color: #ebebeb;
     }
 
-    #student-search-results {
+    #user-search-results {
       margin-top: 10px;
     }
-    #student-search {
+    #user-search {
       padding: 8px;
       border: 1px solid #ccc;
       font-family: Arial, sans-serif;
@@ -54,45 +54,45 @@
   </style>
 </head>
 <body>
-  <h1>Students</h1>
-  <p>course = {{ course }}</p>
-  <form id="student-form" action="/courses/addstudents" method="POST">
-    <input id="student-search" type="text" onkeyup="searchStudents()" placeholder="Search students...">
-    <div id="student-search-results"></div>
-    <input id="selected-students" type="hidden" name="students">
-    <input type="submit" value="Add Selected Students">
+  <h1>users</h1>
+  <p>group = {{ group }}</p>
+  <form id="user-form" action="/groups/addusers" method="POST">
+    <input id="user-search" type="text" onkeyup="searchusers()" placeholder="Search users...">
+    <div id="user-search-results"></div>
+    <input id="selected-users" type="hidden" name="users">
+    <input type="submit" value="Add Selected users">
   </form>
 
-  {% for student in students %}
-    <label><input type="checkbox" name="selected-students" value="{{ student }}">{{ student }}</label><br>
+  {% for user in users %}
+    <label><input type="checkbox" name="selected-users" value="{{ user }}">{{ user }}</label><br>
   {% endfor %}
 
   <script>
-    // assuming you have a students object available
-    var students = {{ students | tojson | safe }};
+    // assuming you have a users object available
+    var users = {{ users | tojson | safe }};
 
-    function searchStudents() {
-      var input = document.getElementById('student-search');
+    function searchUsers() {
+      var input = document.getElementById('user-search');
       var filter = input.value.toUpperCase();
-      var resultsDiv = document.getElementById('student-search-results');
+      var resultsDiv = document.getElementById('user-search-results');
 
       // Clear current results
       resultsDiv.innerHTML = '';
 
-      // Filter the students
-      var filteredStudents = students.filter(function(student) {
-        return student.toUpperCase().includes(filter);
+      // Filter the users
+      var filteredUsers = users.filter(function(user) {
+        return user.toUpperCase().includes(filter);
       });
 
       // Create and append the new search result elements
-      for(var i = 0; i < filteredStudents.length; i++) {
+      for(var i = 0; i < filteredUsers.length; i++) {
         var result = document.createElement('label');
         var checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
-        checkbox.name = 'selected-students';
-        checkbox.value = filteredStudents[i];
+        checkbox.name = 'selected-users';
+        checkbox.value = filteredUsers[i];
         result.appendChild(checkbox);
-        result.innerHTML += filteredStudents[i];
+        result.innerHTML += filteredUsers[i];
         resultsDiv.appendChild(result);
       }
     }

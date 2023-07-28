@@ -38,16 +38,16 @@ class Functions:
         client_id = self.settings['clientId']
         tenant_id = self.settings['tenantId']
         client_secret = self.settings['clientSecret']
-        # stu_dir_app = self.settings['stu_dir_app']
-        # stu_dir_obj = self.settings['stu_dir_obj']
-        # course_dir_app = self.settings['course_dir_app']
-        # course_dir_obj = self.settings['course_dir_obj']
+        # user_dir_app = self.settings['user_dir_app']
+        # user_dir_obj = self.settings['user_dir_obj']
+        # group_dir_app = self.settings['group_dir_app']
+        # group_dir_obj = self.settings['group_dir_obj']
         self.client_credential = ClientSecretCredential(tenant_id, client_id, client_secret)
         auth_provider = AzureIdentityAuthenticationProvider(self.client_credential)  # type: ignore
         self.request_adapter = GraphRequestAdapter(auth_provider)
         self.app_client = GraphServiceClient(self.request_adapter)
 
-    async def get_students(self):
+    async def get_users(self):
         query_params = UsersRequestBuilder.UsersRequestBuilderGetQueryParameters(
             # Only request specific properties
             select=['displayName', 'id', 'mail'],
@@ -64,8 +64,8 @@ class Functions:
             user_display_name.append(user.display_name)
         return user_display_name
 
-    async def get_student_profile_properties(self, option):
-        application_id = self.settings['stu_dir_app']
+    async def get_user_profile_properties(self, option):
+        application_id = self.settings['user_dir_app']
         application_id = application_id.strip()
         extension_request_body = get_available_extension_properties_post_request_body.GetAvailableExtensionPropertiesPostRequestBody()
         extension_request_body.is_synced_from_on_premises = False
@@ -98,7 +98,7 @@ class Functions:
                 return value_dict
 
 
-    async def update_student_profile_properties(self, property_name, property_value, display_name):
+    async def update_user_profile_properties(self, property_name, property_value, display_name):
         global ID
         query_params = UsersRequestBuilder.UsersRequestBuilderGetQueryParameters(
             # Only request specific properties
@@ -121,8 +121,8 @@ class Functions:
         result = await self.app_client.users.by_user_id(ID).patch(request_body)
         pass
 
-    async def show_template_student_properties(self,config:SectionProxy):
-        application_id = self.settings['stu_dir_app']
+    async def show_template_user_properties(self,config:SectionProxy):
+        application_id = self.settings['user_dir_app']
         application_id = application_id.strip()
         extension_request_body = get_available_extension_properties_post_request_body.GetAvailableExtensionPropertiesPostRequestBody()
         extension_request_body.is_synced_from_on_premises = False
@@ -135,8 +135,8 @@ class Functions:
         extension_property_names = list(reversed(extension_property_names))
         return extension_property_names
 
-    async def add_template_student_property(self, config: SectionProxy, property_name):
-        object_id = self.settings['stu_dir_obj']
+    async def add_template_user_property(self, config: SectionProxy, property_name):
+        object_id = self.settings['user_dir_obj']
         request_body = ExtensionProperty()
         request_body.name = re.sub(r'\s', '_', property_name)
         request_body.data_type = 'String'
@@ -145,15 +145,15 @@ class Functions:
             request_body)
         pass
 
-    async def get_courses(self, config: SectionProxy):
-        application_id = self.settings['course_dir_app']
+    async def get_groups(self, config: SectionProxy):
+        application_id = self.settings['group_dir_app']
         extension_request_body = get_available_extension_properties_post_request_body. \
             GetAvailableExtensionPropertiesPostRequestBody()
         extension_request_body.is_synced_from_on_premises = False
         result = await self.app_client.directory_objects.get_available_extension_properties.post(
             extension_request_body)
         extension_property_names = []
-        courses = []
+        groups = []
         for value in result.value:
             if value.name[10:42] == re.sub("-", "", application_id):
                 extension_property_names.append(value.name)
@@ -161,7 +161,7 @@ class Functions:
         for value in extension_property_names:
             if value[43:] == 'Type':
                 query_params = GroupsRequestBuilder.GroupsRequestBuilderGetQueryParameters(
-                    filter=f"{value} eq 'course'",
+                    filter=f"{value} eq 'group'",
                     select=["displayName", "id"],
                 )
                 request_configuration = GroupsRequestBuilder.GroupsRequestBuilderGetRequestConfiguration(
@@ -173,12 +173,12 @@ class Functions:
                 )
 
                 result = await self.app_client.groups.get(request_configuration)
-                for course in result.value:
-                    courses.append(course.display_name)
-                return courses
+                for group in result.value:
+                    groups.append(group.display_name)
+                return groups
 
-    async def create_course(self, config: SectionProxy, course_name, description, properties_key_value):
-        application_id = self.settings['course_dir_app']
+    async def create_group(self, config: SectionProxy, group_name, description, properties_key_value):
+        application_id = self.settings['group_dir_app']
         extension_request_body = get_available_extension_properties_post_request_body.GetAvailableExtensionPropertiesPostRequestBody()
         extension_request_body.is_synced_from_on_premises = False
         result = await self.app_client.directory_objects.get_available_extension_properties.post(
@@ -191,22 +191,22 @@ class Functions:
         index_to_remove = next((index for index, item in enumerate(extension_property_names) if 'Type' in item), None)
         if index_to_remove is not None:
             extension_property_names.pop(index_to_remove)
-        course_properties = properties_key_value
+        group_properties = properties_key_value
         request_body = Group()
-        request_body.display_name = course_name
+        request_body.display_name = group_name
         request_body.description = description
         request_body.group_types = ['Unified', ]
         request_body.mail_enabled = True
 
-        request_body.mail_nickname = re.sub(r'\s', '', course_name)
+        request_body.mail_nickname = re.sub(r'\s', '', group_name)
 
         request_body.security_enabled = False
-        request_body.additional_data = dict(zip(list(extension_property_names), course_properties))
-        request_body.additional_data.update({'Type': 'course'})
+        request_body.additional_data = dict(zip(list(extension_property_names), group_properties))
+        request_body.additional_data.update({'Type': 'group'})
         result = await self.app_client.groups.post(request_body)
 
-    async def add_template_course_property(self, config: SectionProxy, property_name):
-        object_id = self.settings['course_dir_obj']
+    async def add_template_group_property(self, config: SectionProxy, property_name):
+        object_id = self.settings['group_dir_obj']
         request_body = ExtensionProperty()
         request_body.name = re.sub(r'\s', '_', property_name)
         request_body.data_type = 'String'
@@ -216,8 +216,8 @@ class Functions:
         pass
     #Changes test
 
-    async def get_template_course_properties(self, config:SectionProxy):
-        application_id = self.settings['course_dir_app']
+    async def get_template_group_properties(self, config:SectionProxy):
+        application_id = self.settings['group_dir_app']
         extension_request_body = get_available_extension_properties_post_request_body.GetAvailableExtensionPropertiesPostRequestBody()
         extension_request_body.is_synced_from_on_premises = False
         result = await self.app_client.directory_objects.get_available_extension_properties.post(
@@ -229,7 +229,7 @@ class Functions:
         extension_property_names = list(reversed(extension_property_names))
         return extension_property_names
 
-    async def update_course_profile_properties(self, property_name, property_value, display_name):
+    async def update_group_profile_properties(self, property_name, property_value, display_name):
         global ID
         query_params = UsersRequestBuilder.UsersRequestBuilderGetQueryParameters(
             # Only request specific properties
@@ -241,8 +241,8 @@ class Functions:
             query_parameters=query_params
         )
 
-        course_properties_class = await self.app_client.groups.get(request_configuration=request_config)
-        for value in course_properties_class.value:
+        group_properties_class = await self.app_client.groups.get(request_configuration=request_config)
+        for value in group_properties_class.value:
             if str(display_name) == str(value.display_name):
                 ID = value.id
         dir_property = 'extension_21e32d7f-4391-4aaf-bd99-827f65f734eb_' + property_name.replace(" ", "_")
@@ -253,11 +253,11 @@ class Functions:
 
         pass
 
-    async def create_student(self, student_properties):
+    async def create_user(self, user_properties):
         pass
 
-    async def get_course_profile_properties(self, option):
-        application_id = self.settings['course_dir_app']
+    async def get_group_profile_properties(self, option):
+        application_id = self.settings['group_dir_app']
         application_id = application_id.strip()
         extension_request_body = get_available_extension_properties_post_request_body.GetAvailableExtensionPropertiesPostRequestBody()
         extension_request_body.is_synced_from_on_premises = False
@@ -289,16 +289,16 @@ class Functions:
                         value_dict[value] = None
                 return value_dict
 
-    async def view_students_in_a_course(self, course_name):
-        course_id = None
-        application_id = self.settings['course_dir_app']
+    async def view_users_in_a_group(self, group_name):
+        group_id = None
+        application_id = self.settings['group_dir_app']
         extension_request_body = get_available_extension_properties_post_request_body. \
             GetAvailableExtensionPropertiesPostRequestBody()
         extension_request_body.is_synced_from_on_premises = False
         result = await self.app_client.directory_objects.get_available_extension_properties.post(
             extension_request_body)
         extension_property_names = []
-        courses = []
+        groups = []
         for value in result.value:
             if value.name[10:42] == re.sub("-", "", application_id):
                 extension_property_names.append(value.name)
@@ -306,7 +306,7 @@ class Functions:
         for value in extension_property_names:
             if value[43:] == 'Type':
                 query_params = GroupsRequestBuilder.GroupsRequestBuilderGetQueryParameters(
-                    filter=f"{value} eq 'course'",
+                    filter=f"{value} eq 'group'",
                     select=["displayName", "id"],
                 )
                 request_configuration = GroupsRequestBuilder.GroupsRequestBuilderGetRequestConfiguration(
@@ -318,39 +318,39 @@ class Functions:
                 )
 
                 result = await self.app_client.groups.get(request_configuration)
-                course_id = []
-                for course in result.value:
-                    if course_name == course.display_name:
-                        course_id.append(course.id)
+                group_id = []
+                for group in result.value:
+                    if group_name == group.display_name:
+                        group_id.append(group.id)
                         break
                     else:
                         continue
 
-                query_params_students = UsersRequestBuilder.UsersRequestBuilderGetQueryParameters(
+                query_params_users = UsersRequestBuilder.UsersRequestBuilderGetQueryParameters(
                     # Only request specific properties
                     select=['displayName', 'id', 'mail'],
                     # Sort by display name
                     orderby=['displayName']
                 )
                 request_config = UsersRequestBuilder.UsersRequestBuilderGetRequestConfiguration(
-                    query_parameters=query_params_students
+                    query_parameters=query_params_users
                 )
-                students = await self.app_client.groups.by_group_id(course_id[0]).members.graph_user.get(request_config)
+                users = await self.app_client.groups.by_group_id(group_id[0]).members.graph_user.get(request_config)
 
-                student_display_names = []
-                for value in students.value:
-                    student_display_names.append(value.display_name)
-                return student_display_names
+                user_display_names = []
+                for value in users.value:
+                    user_display_names.append(value.display_name)
+                return user_display_names
 
-    async def delete_student_property(self, config:SectionProxy, property_name):
-        application_id = self.settings['stu_dir_app']
-        object_id = self.settings['stu_dir_obj']
+    async def delete_user_property(self, config:SectionProxy, property_name):
+        application_id = self.settings['user_dir_app']
+        object_id = self.settings['user_dir_obj']
         extension_property_id = f"extension_{application_id.replace('-','')}_{property_name.replace(' ', '_')}"
         result = await self.app_client.applications.by_application_id(object_id).extension_properties.by_extension_property_id(extension_property_id).delete()
         pass
 
-    async def add_student_to_course_singular(self, student_name, course_name):
-        application_id = self.settings['course_dir_app']
+    async def add_user_to_group_singular(self, user_name, group_name):
+        application_id = self.settings['group_dir_app']
         extension_request_body = get_available_extension_properties_post_request_body. \
             GetAvailableExtensionPropertiesPostRequestBody()
         extension_request_body.is_synced_from_on_premises = False
@@ -364,7 +364,7 @@ class Functions:
         for value in extension_property_names:
             if value[43:] == 'Type':
                 query_params = GroupsRequestBuilder.GroupsRequestBuilderGetQueryParameters(
-                    filter=f"{value} eq 'course'",
+                    filter=f"{value} eq 'group'",
                     select=["displayName", "id"],
                 )
                 request_configuration = GroupsRequestBuilder.GroupsRequestBuilderGetRequestConfiguration(
@@ -376,10 +376,10 @@ class Functions:
                 )
 
                 result = await self.app_client.groups.get(request_configuration)
-                course_id = None
-                for course in result.value:
-                    if course_name == course.display_name:
-                        course_id = course.id
+                group_id = None
+                for group in result.value:
+                    if group_name == group.display_name:
+                        group_id = group.id
                         break
                     else:
                         continue
@@ -395,15 +395,15 @@ class Functions:
                 )
 
                 users = await self.app_client.users.get(request_configuration=request_config)
-                student_id = None
+                user_id = None
                 for user in users.value:
-                    if user.display_name == student_name:
-                        student_id = user.id
+                    if user.display_name == user_name:
+                        user_id = user.id
 
                 request_body = ReferenceCreate()
-                request_body.odata_id = f"https://graph.microsoft.com/v1.0/directoryObjects/{student_id}"
+                request_body.odata_id = f"https://graph.microsoft.com/v1.0/directoryObjects/{user_id}"
 
-                await self.app_client.groups.by_group_id(course_id).members.ref.post(request_body)
+                await self.app_client.groups.by_group_id(group_id).members.ref.post(request_body)
 
 
 
