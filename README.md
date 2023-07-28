@@ -32,9 +32,9 @@ Before using this repository, make sure you have the following:
 
 1. Setting up your client application: Register a client application on the Azure portal. This application will act as the entry point to the FastAPI template.
 2. Set up two ancillary applications for directory extensions, for users and groups.
-3. Populate `config.dev.cfg` with the necessary credentials.
-4. Install all dependencies in `requirements.txt`. Note that MSGraph SDK is currently in general preview and does not have an SLA. The version of MSGraph used is 1.0.0a12 in this repository.
-5. Run FASTAPI using `uvicorn server:app --reload`.
+3. Create and populate `config.dev.cfg` with the necessary credentials. Use config.cfg as the template. For example: `user_dir_app` means the application ID of the directory extension registered application for the user object.
+5. Install all dependencies in `requirements.txt`. Note that MSGraph SDK is currently in general preview and does not have an SLA. The version of MSGraph used is 1.0.0a12 in this repository.
+6. Run FASTAPI using `uvicorn server:app --reload`.
 
 ## Contributing
 
