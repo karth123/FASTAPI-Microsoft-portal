@@ -8,7 +8,7 @@ Directory extensions are a method by which Entra ID administrators can extend fa
 
 ## Project Overview
 
-This project is an attempt to implement directory extensions with a GUI-like interface. Currently, it is not possible to define directory extension properties in the Entra admin center. An Azure AD administrator would have to use Graph explorer or Powershell Graph to interface with directory extensions which might be difficult.
+This project is an attempt to implement directory extensions with a GUI. Currently, it is not possible to define directory extension properties in the Entra admin center. An Azure AD administrator would have to use Graph explorer or Powershell Graph to interface with directory extensions which might be difficult.
 
 ### Current Functionality
 
@@ -18,7 +18,7 @@ This project is an attempt to implement directory extensions with a GUI-like int
 
 ### Planned Future Functionality
 
-- The ability to add users in this GUI interface using bulk CSV templates which include directory extension properties in the template.
+- The ability to add users in this GUI using bulk CSV templates which include directory extension properties in the template.
 - The ability to add groups and define these groups using the directory extension properties.
 - Filtering groups and users based on directory extension property values.
 
