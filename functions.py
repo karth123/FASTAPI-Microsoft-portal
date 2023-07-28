@@ -100,6 +100,7 @@ class Functions:
 
     async def update_user_profile_properties(self, property_name, property_value, display_name):
         global ID
+        user_dir_app = self.settings['user_dir_app']
         query_params = UsersRequestBuilder.UsersRequestBuilderGetQueryParameters(
             # Only request specific properties
             select=['displayName', 'id', 'mail'],
@@ -114,7 +115,7 @@ class Functions:
         for value in user_properties_class.value:
             if str(display_name) == str(value.display_name):
                 ID = value.id
-        dir_property = 'extension_0a09fe4eefd047798b49f80aaaecb550_' + property_name.replace(" ", "_")
+        dir_property = f"extension_{user_dir_app}_" + property_name.replace(" ", "_")
         request_body = User()
         additional_data = dict([(dir_property, property_value)])
         request_body.additional_data = additional_data
