@@ -20,9 +20,31 @@
   </style>
 </head>
 <body>
-  <h1>Documentation</h1>
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tincidunt mi vel neque eleifend, ac pharetra sem dignissim. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nunc tempus gravida sollicitudin. Mauris eu massa cursus, convallis tortor eu, rutrum libero. Fusce non efficitur leo. Suspendisse varius, lorem a dapibus consequat, purus nunc facilisis lectus, nec convallis enim quam ac mi. Mauris rutrum tortor at ligula venenatis tristique. Sed efficitur magna id lectus efficitur, eget eleifend risus efficitur.</p>
-  <p>Suspendisse sit amet sem dapibus, maximus lectus non, faucibus ligula. Mauris nec consectetur est. Fusce sodales dui non orci maximus, a aliquam erat scelerisque. Nullam id sollicitudin enim, sit amet sagittis ex. Suspendisse potenti. Ut tincidunt metus at lorem fermentum dignissim. Donec faucibus felis eget mi elementum ullamcorper.</p>
-  <p>Quisque posuere scelerisque justo nec interdum. Sed fringilla urna id cursus iaculis. Fusce convallis, velit id lobortis hendrerit, velit tellus elementum est, vitae tincidunt erat elit id libero. In aliquam, risus nec varius tempor, ex dui convallis odio, nec ullamcorper ligula augue non felis. In ultrices vulputate purus, id placerat ipsum aliquam in. Sed convallis ex nec metus efficitur pulvinar. Suspendisse bibendum tellus quis nisi dictum fringilla. Nulla facilisi. Mauris non sem in sapien venenatis tempor. Sed ultricies diam id urna dictum eleifend. Morbi dignissim rutrum varius. Fusce placerat quam sed eros tincidunt, vitae bibendum urna lacinia.</p>
+    <h1>As of the current update (28-07-2023) the following functionality is possible to perform using this application:</h1>
+    <ol>
+        <li>View and search users: Access these users in the users topnav button. You cannot add users so please use the azure portal to add users first and then search them in the portal for the current update.</li>
+        <li>Modify the directory extension property values for users: You can access the user in the user topnav button and then click on any particular user. A set of directory extension properties scoped to the user will pop up which you can edit with the values.</li>
+        <li>View groups: You can view groups through the view groups button in the topnav.</li>
+        <li>Modify directory extension property values for groups: Similar to users.</li>
+        <li>Add directory extension properties to the user object: You can do this by selecting Template user properties in the topnav. You can view all properties you have already added as well as add new properties.</li>
+    </ol>
+    <h2>Features which are broken:</h2>
+    <ul>
+        <li>Currently, the feature to add directory extension properties to groups is broken. The delete capability is also broken as of the latest update.</li>
+        <li>The feature to add groups is broken and the button will not work.</li>
+        <li>The feature to delete extension properties of users and groups is broken.</li>
+    </ul>
+    <h2>Expectations for the new update:</h2>
+    <ul>
+        <li>Refactoring code to conform with MSGraph SDK latest version.</li>
+        <li>Fixing all bugs and broken code.</li>
+    </ul>
+    <h2>New features to be implemented:</h2>
+    <ul>
+        <li>Adding users individually and in bulk using csv templates which extend to directory extension property values.</li>
+        <li>Adding groups with directory extension property values.</li>
+        <li>Delete directory extension properties.</li>
+        <li>Delete users and groups.</li>
+    </ul>
 </body>
 </html>

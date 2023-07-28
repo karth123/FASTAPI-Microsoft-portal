@@ -148,35 +148,23 @@ class Functions:
 
     async def get_groups(self, config: SectionProxy):
         application_id = self.settings['group_dir_app']
-        extension_request_body = get_available_extension_properties_post_request_body. \
-            GetAvailableExtensionPropertiesPostRequestBody()
-        extension_request_body.is_synced_from_on_premises = False
-        result = await self.app_client.directory_objects.get_available_extension_properties.post(
-            extension_request_body)
-        extension_property_names = []
         groups = []
-        for value in result.value:
-            if value.name[10:42] == re.sub("-", "", application_id):
-                extension_property_names.append(value.name)
-        extension_property_names = list(reversed(extension_property_names))
-        for value in extension_property_names:
-            if value[43:] == 'Type':
-                query_params = GroupsRequestBuilder.GroupsRequestBuilderGetQueryParameters(
-                    filter=f"{value} eq 'group'",
-                    select=["displayName", "id"],
-                )
-                request_configuration = GroupsRequestBuilder.GroupsRequestBuilderGetRequestConfiguration(
-                    query_parameters=query_params,
-                    headers={
-                        'ConsistencyLevel': "eventual",
-                    }
+        query_params = GroupsRequestBuilder.GroupsRequestBuilderGetQueryParameters(
+            #filter=f"{value} eq 'group'",
+            select=["displayName", "id"],
+        )
+        request_configuration = GroupsRequestBuilder.GroupsRequestBuilderGetRequestConfiguration(
+            query_parameters=query_params,
+            headers={
+                'ConsistencyLevel': "eventual",
+            }
 
-                )
+        )
 
-                result = await self.app_client.groups.get(request_configuration)
-                for group in result.value:
-                    groups.append(group.display_name)
-                return groups
+        result = await self.app_client.groups.get(request_configuration)
+        for group in result.value:
+            groups.append(group.display_name)
+        return groups
 
     async def create_group(self, config: SectionProxy, group_name, description, properties_key_value):
         application_id = self.settings['group_dir_app']
