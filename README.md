@@ -1,4 +1,4 @@
-# FASTAPI Microsoft portal
+# A FastAPI based extension portal for Microsoft Entra ID
 
 ## Introduction
 
