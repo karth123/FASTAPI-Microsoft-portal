@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Students</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .student-button {
+      display: inline-block;
+      margin: 5px;
+      padding: 8px 15px;
+      background-color: #f5f5f5;
+      border: 1px solid #ccc;
+      text-decoration: none;
+      color: #333;
+    }
+
+    .student-button:hover {
+      background-color: #ebebeb;
+    }
+
+    #student-search-results {
+      margin-top: 10px;
+    }
+    #student-search {
+      padding: 8px;
+      border: 1px solid #ccc;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    .search-result {
+      display: block;
+      width: 100%;
+      padding: 8px;
+      background-color: #f5f5f5;
+      border: 1px solid #ccc;
+      text-decoration: none;
+      color: #333;
+      margin-bottom: 2px;
+    }
+
+    .search-result:hover {
+      background-color: #ebebeb;
+    }
+  </style>
+</head>
+<body>
+  <h1>Students</h1>
+  <p>course = {{ course }}</p>
+  <form id="student-form" action="/courses/addstudents" method="POST">
+    <input id="student-search" type="text" onkeyup="searchStudents()" placeholder="Search students...">
+    <div id="student-search-results"></div>
+    <input id="selected-students" type="hidden" name="students">
+    <input type="submit" value="Add Selected Students">
+  </form>
+
+  {% for student in students %}
+    <label><input type="checkbox" name="selected-students" value="{{ student }}">{{ student }}</label><br>
+  {% endfor %}
+
+  <script>
+    // assuming you have a students object available
+    var students = {{ students | tojson | safe }};
+
+    function searchStudents() {
+      var input = document.getElementById('student-search');
+      var filter = input.value.toUpperCase();
+      var resultsDiv = document.getElementById('student-search-results');
+
+      // Clear current results
+      resultsDiv.innerHTML = '';
+
+      // Filter the students
+      var filteredStudents = students.filter(function(student) {
+        return student.toUpperCase().includes(filter);
+      });
+
+      // Create and append the new search result elements
+      for(var i = 0; i < filteredStudents.length; i++) {
+        var result = document.createElement('label');
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.name = 'selected-students';
+        checkbox.value = filteredStudents[i];
+        result.appendChild(checkbox);
+        result.innerHTML += filteredStudents[i];
+        resultsDiv.appendChild(result);
+      }
+    }
+  </script>
+</body>
+</html>

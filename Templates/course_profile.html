@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Course Information</title>
+  <style>
+    #property-search-results {
+      height: auto;
+      max-height: 160px;  /* Adjust as needed */
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      overflow-x: auto;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: max-content;
+      white-space: nowrap;
+    }
+
+    th,
+    td {
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .update-button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      text-decoration: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .update-button:hover {
+      background-color: #45a049;
+    }
+
+    #property-search-results {
+      margin-top: 10px;
+    }
+
+    .search-result {
+      display: block;
+      width: 100%;
+      padding: 8px;
+      background-color: #f5f5f5;
+      border: 1px solid #ccc;
+      text-decoration: none;
+      color: #333;
+      margin-bottom: 2px;
+    }
+
+    .search-result:hover {
+      background-color: #ebebeb;
+    }
+  </style>
+   <script>
+    var course_profile = {{ course_profile | tojson | safe }};
+
+    function updateProperty(element) {
+      const form = element.parentNode;
+      const propertyValue = form.querySelector("input[name=property_value]");
+      propertyValue.value = element.value;
+      form.submit();
+    }
+
+    function searchProperties() {
+      var input = document.getElementById('property-search');
+      var filter = input.value.toUpperCase();
+      var resultsDiv = document.getElementById('property-search-results');
+
+      // Clear current results
+      resultsDiv.innerHTML = '';
+
+      // Filter the properties
+      var filteredProperties = Object.keys(course_profile).filter(function(property) {
+        return property.toUpperCase().includes(filter);
+      });
+
+      // Create and append the new search result elements
+      for (let i = 0; i < filteredProperties.length; i++) {
+        var result = document.createElement('button');
+        result.onclick = function() { scrollToProperty(filteredProperties[i]); };
+        result.className = 'search-result';
+        result.textContent = filteredProperties[i];
+        resultsDiv.appendChild(result);
+      }
+    }
+
+    function scrollToProperty(property) {
+      var targetRow = document.getElementById('row-' + property);
+      targetRow.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+
+      // Highlight the row briefly
+      targetRow.style.backgroundColor = "#f5f5f5";
+      setTimeout(function() {
+        targetRow.style.backgroundColor = "";
+      }, 2000);
+    }
+
+    document.addEventListener('click', function() {
+      document.getElementById('property-search-results').innerHTML = '';
+    });
+
+    function loadViewStudents() {
+      // Send an AJAX request to fetch the students data
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState === 4 && this.status === 200) {
+          // Update the students container with the received data
+          var studentsContainer = document.getElementById('students-container');
+          studentsContainer.innerHTML = this.responseText;
+        }
+      };
+      xhttp.open('GET', '/courses/{{ course }}/viewstudents', true);
+      xhttp.send();
+    }
+
+    function loadAddStudents() {
+      // Send an AJAX request to fetch the add students form
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState === 4 && this.status === 200) {
+          // Update the content with the received form
+          var addStudentsContainer = document.getElementById('add-students-container');
+          addStudentsContainer.innerHTML = this.responseText;
+        }
+      };
+      xhttp.open('GET', '/courses/{{ course }}/addstudents', true);
+      xhttp.send();
+    }
+  </script>
+</head>
+<body>
+  <div style="display: flex; align-items: center;">
+    <h1 style="flex: 1;">Information for {{ course }}</h1>
+    <div>
+      <button class="update-button" onclick="loadViewStudents()">View Students</button>
+      <button class="update-button" onclick="loadAddStudents()">Add Students</button>
+    </div>
+  </div>
+
+  <input id="property-search" type="text" oninput="searchProperties()" onclick="searchProperties(); event.stopPropagation();" placeholder="Search properties...">
+
+  <div id="property-search-results" onclick="event.stopPropagation()"></div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Value</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for property, value in course_profile.items() %}
+        {% if property != "Type" and property != "course" %}
+          <tr id="row-{{ property }}">
+            <td>{{ property }}</td>
+            <td>
+              <form action="{{ update_urls[property] }}" method="post">
+                <input type="text" name="property_value" value="{{ value }}">
+                <button class="update-button" onclick="updateProperty(this.previousElementSibling)">Update</button>
+              </form>
+            </td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Container to hold the students data -->
+  <div id="students-container"></div>
+
+  <!-- Container to hold the add students form -->
+  <div id="add-students-container"></div>
+
+  <script>
+    function loadAddStudents() {
+      // Send an AJAX request to fetch the add students form
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if (this.readyState === 4 && this.status === 200) {
+          // Update the content with the received form
+          var addStudentsContainer = document.getElementById('add-students-container');
+          addStudentsContainer.innerHTML = this.responseText;
+        }
+      };
+      xhttp.open('GET', '/courses/{{ course }}/addstudents', true);
+      xhttp.send();
+    }
+  </script>
+</body>
+</html>

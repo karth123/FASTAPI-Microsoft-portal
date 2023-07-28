@@ -1,0 +1,55 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+}
+
+h1 {
+    color: #6c757d;
+    text-align: center;
+    padding: 20px;
+}
+
+#studentSelect {
+    display: block;
+    width: 200px;
+    margin: 20px auto;
+}
+
+#studentForm {
+    width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #6c757d;
+    border-radius: 5px;
+}
+
+#studentForm .form-group {
+    margin-bottom: 10px;
+}
+
+#studentForm label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#studentForm input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+}
+
+#studentForm button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    margin-top: 10px;
+    cursor: pointer;
+}

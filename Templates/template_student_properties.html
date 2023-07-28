@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Properties</title>
+    <style>
+        /* CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .property-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .course-button {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 15px;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .course-button:hover {
+            background-color: #ebebeb;
+        }
+
+        .delete-button {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 8px 15px;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .delete-button:hover {
+            background-color: #ebebeb;
+        }
+
+        #course-search-results {
+            margin-top: 10px;
+        }
+
+        #course-search {
+            padding: 8px;
+            border: 1px solid #ccc;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .search-result {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .search-result:hover {
+            background-color: #ebebeb;
+        }
+
+        .property-value {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        Student Properties
+        <form action="/template_student_properties" method="post" class="property-form">
+            <input type="text" name="property_name" placeholder="Enter property name" required>
+            <button type="submit" class="course-button">Add</button>
+        </form>
+    </h1>
+
+    <div id="student-properties">
+        {% for property in template_student_properties %}
+            <div class="search-result">
+                <div class="property-value">{{ property }}</div>
+                <form action="/delete_template_student_property" method="post">
+                    <input type="hidden" name="property_value" value="{{ property }}">
+                    <button type="submit" class="delete-button">Delete</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Information</title>
+  <style>
+    #property-search-results {
+  height: auto;
+  max-height: 160px;  /* Adjust as needed */
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      overflow-x: auto;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: max-content;
+      white-space: nowrap;
+    }
+
+    th,
+    td {
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .update-button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      text-decoration: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .update-button:hover {
+      background-color: #45a049;
+    }
+
+    #property-search-results {
+      margin-top: 10px;
+    }
+
+    .search-result {
+      display: block;
+      width: 100%;
+      padding: 8px;
+      background-color: #f5f5f5;
+      border: 1px solid #ccc;
+      text-decoration: none;
+      color: #333;
+      margin-bottom: 2px;
+    }
+
+    .search-result:hover {
+      background-color: #ebebeb;
+    }
+  </style>
+  <script>
+    // assuming you have a student_profile object available
+    var student_profile = {{ student_profile | tojson | safe }};
+
+    function updateProperty(element) {
+      const form = element.parentNode;
+      const propertyValue = form.querySelector("input[name=property_value]");
+      propertyValue.value = element.value;
+      form.submit();
+    }
+
+    function searchProperties() {
+  var input = document.getElementById('property-search');
+  var filter = input.value.toUpperCase();
+  var resultsDiv = document.getElementById('property-search-results');
+
+  // Clear current results
+  resultsDiv.innerHTML = '';
+
+  // Filter the properties
+  var filteredProperties = Object.keys(student_profile).filter(function(property) {
+    return property.toUpperCase().includes(filter);
+  });
+
+  // Create and append the new search result elements
+  for(let i = 0; i < filteredProperties.length; i++) {
+    var result = document.createElement('button');
+    result.onclick = function() { scrollToProperty(filteredProperties[i]); };
+    result.className = 'search-result';
+    result.textContent = filteredProperties[i];
+    resultsDiv.appendChild(result);
+    }
+  }
+
+
+    function scrollToProperty(property) {
+      var targetRow = document.getElementById('row-' + property);
+      targetRow.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+
+      // highlight the row briefly
+      targetRow.style.backgroundColor = "#f5f5f5";
+      setTimeout(function() {
+        targetRow.style.backgroundColor = "";
+      }, 2000);
+    }
+
+    document.addEventListener('click', function() {
+      document.getElementById('property-search-results').innerHTML = '';
+    });
+  </script>
+</head>
+<body>
+  <h1>Information for {{student}}</h1>
+
+   <input id="property-search" type="text" oninput="searchProperties()" onclick="searchProperties(); event.stopPropagation();" placeholder="Search properties...">
+
+
+<div id="property-search-results" onclick="event.stopPropagation()"></div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Value</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for property, value in student_profile.items() %}
+        <tr id="row-{{ property }}">
+          <td>{{ property }}</td>
+          <td>
+            <form action="{{ update_urls[property] }}" method="post">
+              <input type="text" name="property_value" value="{{ value }}">
+              <button class="update-button" onclick="updateProperty(this.previousElementSibling)">Update</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>
+
+
+
+
+

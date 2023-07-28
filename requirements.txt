@@ -1,0 +1,11 @@
+msgraph-sdk==1.0.0a12
+fastapi~=0.99.1
+uvicorn[standard]
+argparse
+future
+Jinja2
+pandas~=2.0.2
+python-multipart
+fastapi-sessions
+
+

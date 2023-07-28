@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Courses</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .course-button {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 15px;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .course-button:hover {
+            background-color: #ebebeb;
+        }
+
+        #course-search-results {
+            margin-top: 10px;
+        }
+
+        #course-search {
+            padding: 8px;
+            border: 1px solid #ccc;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .search-result {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .search-result:hover {
+            background-color: #ebebeb;
+        }
+    </style>
+</head>
+<body>
+    <h1>Courses</h1>
+    <input id="course-search" type="text" onkeyup="searchCourses()" placeholder="Search courses...">
+
+    <div id="course-search-results"></div>
+
+    {% for course in courses %}
+        <a class="course-button" href="/courses/{{ course }}/courseprofile">{{ course }}</a>
+    {% endfor %}
+
+    <script>
+        // Assuming you have a courses object available
+        var courses = {{ courses | tojson | safe }};
+
+        function searchCourses() {
+            var input = document.getElementById('course-search');
+            var filter = input.value.toUpperCase();
+            var resultsDiv = document.getElementById('course-search-results');
+
+            // Clear current results
+            resultsDiv.innerHTML = '';
+
+            // Filter the courses
+            var filteredCourses = courses.filter(function(course) {
+                return course.toUpperCase().includes(filter);
+            });
+
+            // Create and append the new search result elements
+            for (var i = 0; i < filteredCourses.length; i++) {
+                var result = document.createElement('a');
+                result.href = '/courses/' + filteredCourses[i] + '/courseprofile';
+                result.className = 'search-result';
+                result.textContent = filteredCourses[i];
+                resultsDiv.appendChild(result);
+            }
+        }
+    </script>
+</body>
+</html>
+
