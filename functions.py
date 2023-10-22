@@ -49,9 +49,7 @@ class Functions:
 
     async def get_users(self):
         query_params = UsersRequestBuilder.UsersRequestBuilderGetQueryParameters(
-            # Only request specific properties
-            select=['displayName', 'id', 'mail'],
-            # Sort by display name
+            select=['displayName', 'id', 'faxNumber'],
             orderby=['displayName']
         )
         request_config = UsersRequestBuilder.UsersRequestBuilderGetRequestConfiguration(
@@ -59,6 +57,7 @@ class Functions:
         )
 
         users = await self.app_client.users.get(request_configuration=request_config)
+
         user_display_name = []
         for user in users.value:
             user_display_name.append(user.display_name)

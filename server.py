@@ -12,7 +12,7 @@ import configparser
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 config = configparser.ConfigParser()
-config.read(['config.dev.cfg'])
+config.read(['config.cfg'])
 azure_settings = config['azure']
 functions = Functions(azure_settings)
 
